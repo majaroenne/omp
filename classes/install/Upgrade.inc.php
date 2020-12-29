@@ -740,7 +740,7 @@ class Upgrade extends Installer {
 
 		$submissionDao = DAORegistry::getDAO('SubmissionDAO'); /* @var $submissionDao SubmissionDAO */
 		$result = $submissionDao->retrieve(
-			'SELECT	ps.submission_id as submission_id,
+			'SELECT	distinct ps.submission_id as submission_id,
 				ps.cover_image as cover_image,
 				s.context_id as context_id
 			FROM	published_submissions ps
@@ -798,23 +798,29 @@ class Upgrade extends Installer {
 			if(isset($context)) {
 				foreach ($context->getSupportedFormLocales() as $localeKey) {
 					$newCoverPathInfo = pathinfo($newCoverPath);
+
 					$submissionDao = DAORegistry::getDAO('SubmissionDAO');
 					/* @var $submissionDao SubmissionDAO */
-					$submissionDao->update(
-						'INSERT INTO submission_settings (submission_id, setting_name, setting_value, setting_type, locale)
-						VALUES (?, ?, ?, ?, ?)',
-						[
-							$row['submission_id'],
-							'coverImage',
-							serialize([
-								'uploadName' => $newCoverPathInfo['basename'],
-								'dateUploaded' => $coverImage['dateUploaded'],
-								'altText' => '',
-							]),
-							'object',
-							$localeKey,
-						]
-					);
+					$result = $submissionDao->retrieve(
+						"SELECT	submission_id from submission_settings WHERE  submission_id = " . $row['submission_id'] .
+						" AND  setting_name = 'coverImage' AND locale = '" . $localeKey . "'");
+					if (is_null($result)) {
+						$submissionDao->update(
+							'INSERT INTO submission_settings (submission_id, setting_name, setting_value, setting_type, locale)
+							VALUES (?, ?, ?, ?, ?)',
+							[
+								$row['submission_id'],
+								'coverImage',
+								serialize([
+									'uploadName' => $newCoverPathInfo['basename'],
+									'dateUploaded' => $coverImage['dateUploaded'],
+									'altText' => '',
+								]),
+								'object',
+								$localeKey,
+							]
+						);
+					}
 				}
 			}
 

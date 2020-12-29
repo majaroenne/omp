@@ -365,7 +365,6 @@
 			<AUTOINCREMENT/>
 		</field>
 		<field name="publication_id" type="I8">
-			<NOTNULL/>
 		</field>
 		<field name="submission_id" type="I8">
 			<!-- DEPRECATED: Held over for the OJS 2.x to 3. upgrade process pkp/pkp-lib#3572 -->
@@ -457,7 +456,6 @@
 		</field>
 		<field name="primary_contact_id" type="I8" />
 		<field name="publication_id" type="I8">
-			<NOTNULL />
 		</field>
 		<field name="seq" type="F">
 			<NOTNULL />
