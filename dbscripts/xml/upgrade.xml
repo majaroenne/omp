@@ -74,7 +74,10 @@
 	<schema file="lib/pkp/xml/schema/metrics.xml" />
 	<schema file="lib/pkp/xml/schema/navigationMenus.xml" />
 	<schema file="lib/pkp/xml/schema/categories.xml" />
-
+	<!-- need to run this before omp_schema.xml -->
+	<upgrade minversion="0.9.9.0" maxversion="3.1.9.9">
+		<data file="dbscripts/xml/upgrade/3.2.0_preupdate_publication_formats_and_submission_chapters.xml" />
+	</upgrade>
 	<!-- OMP schema -->
 	<schema file="dbscripts/xml/omp_schema.xml" />
 
